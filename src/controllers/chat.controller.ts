@@ -19,7 +19,7 @@ export const getUserChats = async (req: AuthRequest, res: Response) => {
         },
       },
     });
-    const userChats = chats.map((chat) => chat.chat);
+    const userChats = chats.map((chat:any) => chat.chat);
     return res.status(200).json({ chats: userChats });
   } catch (e) {
     return res.status(500).json({ error: "server error" });
