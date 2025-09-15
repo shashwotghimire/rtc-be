@@ -7,7 +7,6 @@ import { loginSchema, registerSchema } from "../schema/auth.schema";
 const router = Router();
 
 // register
-
 router.post(
   "/register",
   registerUser as any,

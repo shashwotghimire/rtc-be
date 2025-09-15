@@ -5,8 +5,9 @@ import cors from "cors";
 // routes import
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import checkRoutes from "./routes/check.routes";
 import chatRoutes from "./routes/chats.routes";
-
+import messageRoutes from "./routes/messages.routes";
 //app
 dotenv.config();
 
@@ -20,5 +21,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/chats", messageRoutes);
+app.use("/api/check", checkRoutes);
 
 export default app;
