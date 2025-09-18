@@ -9,7 +9,7 @@ interface MessagePayload {
 }
 
 export const initSocket = (server: HttpServer) => {
-  const io = new Server(server);
+  const io = new Server(server, { cors: { origin: "*" } });
   io.on("connection", (socket) => {
     console.log("a user connected", socket.id);
 
@@ -58,7 +58,7 @@ export const initSocket = (server: HttpServer) => {
     });
 
     socket.on("disconnect", () => {
-      console.log("a user disconnected");
+      console.log("A user disconnected");
     });
   });
   return io;

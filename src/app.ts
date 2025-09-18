@@ -14,7 +14,14 @@ dotenv.config();
 const app = express();
 
 // mware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Replace with your React app's URL in production
+    methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
+    credentials: true, // Allow sending of cookies and authorization headers
+  })
+);
 app.use(express.json());
 
 // routes
