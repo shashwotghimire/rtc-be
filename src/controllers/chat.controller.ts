@@ -61,42 +61,34 @@ export const getUserChatById = async (req: AuthRequest, res: Response) => {
 
 export const createChat = async (req: AuthRequest, res: Response) => {
   try {
-    const { name, recieverId } = req.body;
-    if (!recieverId) {
-      return res.status(404).json({ error: "no reciever id" });
+    const { name, recieverUsername } = req.body;
+    if (!recieverUsername) {
+      return res.status(404).json({ error: "no reciever username" });
     }
-    // check existing chats betn 2 users
+    //  find the reciever
+    const reciever = await prisma.user.findFirst({
+      where: { username: recieverUsername },
+    });
+    if (!reciever) {
+      return res.status(404).json({ error: "user not found" });
+    }
+    //  check for existing chats betn reciever and user
     const existingChat = await prisma.chat.findFirst({
       where: {
         members: {
           every: {
-            OR: [{ userId: req.user.id }, { userId: recieverId }],
-          },
-        },
-      },
-      include: {
-        members: {
-          include: {
-            user: {
-              select: {
-                username: true,
-                id: true,
-                email: true,
-              },
-            },
+            OR: [{ userId: req.user.id }, { userId: reciever.id }],
           },
         },
       },
     });
     if (existingChat) {
-      return res.status(200).json({ chat: existingChat });
+      return res.status(400).json({ error: "chat already exists" });
     }
     const chat = await prisma.chat.create({
       data: {
         name,
-        members: {
-          create: [{ userId: req.user.id }, { userId: recieverId }],
-        },
+        members: { create: [{ userId: req.user.id }, { userId: reciever.id }] },
       },
       include: {
         members: {
@@ -112,7 +104,7 @@ export const createChat = async (req: AuthRequest, res: Response) => {
         },
       },
     });
-    return res.status(201).json({ chat });
+    return res.status(200).json({ chat });
   } catch (e) {
     return res.status(500).json({ error: "server error" });
   }
