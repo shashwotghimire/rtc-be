@@ -35,7 +35,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const token = signToken({ id: user.id, email: user.email });
     return res.status(200).json({ message: "user registered", user, token });
   } catch (e: any) {
-    return res.status(500).json({ message: "server error" });
+    return res.status(500).json({ message: e });
   }
 };
 

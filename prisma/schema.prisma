@@ -14,42 +14,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id String @id @default(cuid())
-  username String @unique
-  email String  @unique
-  password String
-  createdAt DateTime @default(now())
+  id             String       @id @default(cuid())
+  username       String       @unique
+  email          String       @unique
+  password       String
+  createdAt      DateTime     @default(now())
   chatMembership ChatMember[]
-  messages Message[]
-  
+  messages       Message[]
+
+  @@index([username, email])
 }
 
 model Chat {
-  id String @id @default(cuid())
-  name String?          // optional chat name
-  messages Message[]
-  members ChatMember[]
-  createdAt   DateTime @default(now())
+  id        String       @id @default(cuid())
+  name      String? // optional chat name
+  messages  Message[]
+  members   ChatMember[]
+  createdAt DateTime     @default(now())
+
+  @@index([createdAt])
 }
 
 model ChatMember {
-  id String @id @default(cuid())
-  chat Chat @relation(fields: [chatId], references: [id])
-  chatId  String
-  user User @relation(fields: [userId],references: [id])
+  id     String @id @default(cuid())
+  chat   Chat   @relation(fields: [chatId], references: [id])
+  chatId String
+  user   User   @relation(fields: [userId], references: [id])
   userId String
-  role String @default("member")      //admin,member,banned
+  role   String @default("member") //admin,member,banned
+
+  @@index([chatId, userId])
 }
 
 model Message {
-  id String @id @default(cuid())
-  chat Chat @relation(fields: [chatId],references: [id])
-  chatId  String
-  sender User @relation(fields: [senderId],references: [id])
-  senderId String
-  content String
+  id        String   @id @default(cuid())
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String
+  sender    User     @relation(fields: [senderId], references: [id])
+  senderId  String
+  content   String
   createdAt DateTime @default(now())
-}
 
+  @@index([chatId, createdAt])
+}
